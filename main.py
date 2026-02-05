@@ -4,7 +4,7 @@ import asyncio
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-
+from aiogram.types import CallbackQuery
 TOKEN = os.getenv("BOT_TOKEN")
 
 bot = Bot(token=TOKEN)
