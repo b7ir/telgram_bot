@@ -56,24 +56,3 @@ if __name__ == "__main__":
     @dp.callback_query()
 async def handle_buttons(callback: types.CallbackQuery):
     data = callback.data
-
-    if data == "services":
-        await callback.message.answer("🛒 خزمەتگوزاریەکان")
-    elif data == "ads":
-        await callback.message.answer("📢 کەشەپێدانی کەناڵەکان")
-    elif data == "upgrade":
-        await callback.message.answer("✨ گۆڕانکاری")
-    elif data == "transfer":
-        await callback.message.answer("🔄 گواستنەوەی خال")
-    elif data == "redeem":
-        await callback.message.answer("💳 بەکارهێنانی کۆد")
-    elif data == "profile":
-        await callback.message.answer("👤 هەژمار")
-    elif data == "support":
-        await callback.message.answer("📬 زانیاری داواکاری")
-    elif data == "stats":
-        await callback.message.answer("📊 ئامارەکان")
-    elif data == "help":
-        await callback.message.answer("❓ ڕێنمایی")
-
-    await callback.answer()
