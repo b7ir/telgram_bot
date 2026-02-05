@@ -4,8 +4,12 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
+# ===== TOKEN =====
 TOKEN = os.getenv("BOT_TOKEN")
+if not TOKEN:
+    raise ValueError("BOT_TOKEN environment variable is not set")
 
+# ===== BOT & DISPATCHER =====
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
@@ -45,24 +49,20 @@ async def start(message: types.Message):
 async def handle_buttons(callback: types.CallbackQuery):
     data = callback.data
 
-    if data == "services":
-        await callback.message.answer("🛒 خزمەتگوزاریەکان")
-    elif data == "ads":
-        await callback.message.answer("📣 ڕیکلامەکان")
-    elif data == "upgrade":
-        await callback.message.answer("✨ گۆڕانکاری")
-    elif data == "transfer":
-        await callback.message.answer("🔄 گواستنەوەی خاڵ")
-    elif data == "redeem":
-        await callback.message.answer("💳 بەکارهێنانی کۆد")
-    elif data == "profile":
-        await callback.message.answer("👤 هەژمار")
-    elif data == "support":
-        await callback.message.answer("📬 پشتیوانی")
-    elif data == "stats":
-        await callback.message.answer("📊 ئامارەکان")
-    elif data == "help":
-        await callback.message.answer("❓ یارمەتیدان")
+    responses = {
+        "services": "🛒 خزمەتگوزاریەکان",
+        "ads": "📣 ڕیکلامەکان",
+        "upgrade": "✨ گۆڕانکاری",
+        "transfer": "🔄 گواستنەوەی خاڵ",
+        "redeem": "💳 بەکارهێنانی کۆد",
+        "profile": "👤 هەژمار",
+        "support": "📬 پشتیوانی",
+        "stats": "📊 ئامارەکان",
+        "help": "❓ یارمەتیدان"
+    }
+
+    if data in responses:
+        await callback.message.answer(responses[data])
 
     await callback.answer()
 
