@@ -47,11 +47,6 @@ async def about(callback: types.CallbackQuery):
     await callback.message.answer("🤖 ئەم بوتە بە aiogram دروست کراوە")
     await callback.answer()
 
-# ====== کارپێکردنی بوت ======
-async def main():
-    await dp.start_polling(bot)
-if __name__ == "__main__":
-    asyncio.run(main())
 sale_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
         [
@@ -68,15 +63,3 @@ sale_keyboard = InlineKeyboardMarkup(
         ]
     ]
 )
-@dp.message(Command("start"))
-async def start(message: types.Message):
-    await message.answer(
-        "🛒 بەخێربێیت بۆ لیستی فرۆشتن\nتکایە شتێک هەڵبژێرە 👇",
-        reply_markup=sale_keyboard
-    )
-@dp.message(Command("start"))
-async def start(message: types.Message):
-    await message.answer(
-        "🛒 بەخێربێیت بۆ لیستی فرۆشتن\nتکایە شتێک هەڵبژێرە 👇",
-        reply_markup=sale_keyboard
-    )
