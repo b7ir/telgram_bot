@@ -36,7 +36,6 @@ menu_keyboard = InlineKeyboardMarkup(
         ],
     ]
 )
-
 # ===== /start =====
 @dp.message(Command("start"))
 async def start(message: types.Message):
@@ -46,7 +45,6 @@ async def start(message: types.Message):
         "👇 تکایە دووگمەیەک هەڵبژێرە:",
         reply_markup=menu_keyboard
     )
-
 # ===== MAIN =====
 async def main():
     await dp.start_polling(bot)
@@ -60,7 +58,6 @@ from aiogram import types
 @dp.callback_query()
 async def handle_buttons(callback: types.CallbackQuery):
     data = callback.data
-
     if data == "services":
         await callback.message.answer("🛒 خزمەتگوزاریەکان")
     elif data == "ads":
@@ -79,5 +76,4 @@ async def handle_buttons(callback: types.CallbackQuery):
         await callback.message.answer("📊 ئامارەکان")
     elif data == "help":
         await callback.message.answer("❓ ڕێنمایی")
-
     await callback.answer()
