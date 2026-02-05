@@ -63,3 +63,25 @@ sale_keyboard = InlineKeyboardMarkup(
         ]
     ]
 )
+menu_keyboard = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(text="🛒 خزمەتگوزاریەکان", callback_data="services"),
+            InlineKeyboardButton(text="📢 کەشەی پێدان", callback_data="offers")
+        ],
+        [
+            InlineKeyboardButton(text="ℹ️ دەربارەی بۆت", callback_data="about")
+        ]
+    ]
+)
+@dp.callback_query(lambda c: c.data == "services")
+async def services_handler(callback: CallbackQuery):
+    await callback.message.answer(
+        "🛒 **لیستی خزمەتگوزاریەکان**:\n\n"
+        "1️⃣ فۆڵۆوەران\n"
+        "2️⃣ لایک\n"
+        "3️⃣ بینین\n\n"
+        "تکایە یەکێک هەڵبژێرە 👇"
+    )
+    await callback.answer()
+    
