@@ -9,44 +9,44 @@ TOKEN = os.getenv("BOT_TOKEN")
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
-# ====== MENU BUTTONS ======
+# ====== دوگمەکانی مینو ======
 menu_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
         [
-            InlineKeyboardButton(text="📋 Menu 1", callback_data="menu_1"),
-            InlineKeyboardButton(text="⚙️ Menu 2", callback_data="menu_2")
+            InlineKeyboardButton(text="📋 لیستی یەکەم", callback_data="menu_1"),
+            InlineKeyboardButton(text="⚙️ لیستی دووەم", callback_data="menu_2")
         ],
         [
-            InlineKeyboardButton(text="ℹ️ About", callback_data="about")
+            InlineKeyboardButton(text="ℹ️ دەربارەی بوت", callback_data="about")
         ]
     ]
 )
 
-# ====== /start COMMAND ======
+# ====== فەرمانی /start ======
 @dp.message(Command("start"))
 async def start(message: types.Message):
     await message.answer(
-        "👋 Welcome!\nChoose from the menu below:",
+        "👋 بەخێربێیت!\nتکایە یەکێک لە لیستەکان هەڵبژێرە 👇",
         reply_markup=menu_keyboard
     )
 
-# ====== BUTTON HANDLERS ======
+# ====== وەڵامی دوگمەکان ======
 @dp.callback_query(lambda c: c.data == "menu_1")
 async def menu1(callback: types.CallbackQuery):
-    await callback.message.answer("📋 You clicked Menu 1")
+    await callback.message.answer("📋 ئەمە لیستی یەکەمە")
     await callback.answer()
 
 @dp.callback_query(lambda c: c.data == "menu_2")
 async def menu2(callback: types.CallbackQuery):
-    await callback.message.answer("⚙️ You clicked Menu 2")
+    await callback.message.answer("⚙️ ئەمە لیستی دووەمە")
     await callback.answer()
 
 @dp.callback_query(lambda c: c.data == "about")
 async def about(callback: types.CallbackQuery):
-    await callback.message.answer("🤖 This is a Telegram bot built with aiogram")
+    await callback.message.answer("🤖 ئەم بوتە بە aiogram دروست کراوە")
     await callback.answer()
 
-# ====== RUN BOT ======
+# ====== کارپێکردنی بوت ======
 async def main():
     await dp.start_polling(bot)
 
