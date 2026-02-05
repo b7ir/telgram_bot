@@ -1,3 +1,4 @@
+
 import os
 import asyncio
 from aiogram import Bot, Dispatcher, types
@@ -49,6 +50,33 @@ async def about(callback: types.CallbackQuery):
 # ====== کارپێکردنی بوت ======
 async def main():
     await dp.start_polling(bot)
-
 if __name__ == "__main__":
     asyncio.run(main())
+sale_keyboard = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(text="📱 مۆبایل - 300$", callback_data="sell_mobile"),
+            InlineKeyboardButton(text="💻 لابتۆپ - 700$", callback_data="sell_laptop")
+        ],
+        [
+            InlineKeyboardButton(text="🎧 هێدفۆن - 50$", callback_data="sell_headphone"),
+            InlineKeyboardButton(text="⌚ کاتژمێر - 120$", callback_data="sell_watch")
+        ],
+        [
+            InlineKeyboardButton(text="📞 پەیوەندی بە فرۆشیار", callback_data="contact"),
+            InlineKeyboardButton(text="🔙 گەڕانەوە", callback_data="back_to_main")
+        ]
+    ]
+)
+@dp.message(Command("start"))
+async def start(message: types.Message):
+    await message.answer(
+        "🛒 بەخێربێیت بۆ لیستی فرۆشتن\nتکایە شتێک هەڵبژێرە 👇",
+        reply_markup=sale_keyboard
+    )
+@dp.message(Command("start"))
+async def start(message: types.Message):
+    await message.answer(
+        "🛒 بەخێربێیت بۆ لیستی فرۆشتن\nتکایە شتێک هەڵبژێرە 👇",
+        reply_markup=sale_keyboard
+    )
