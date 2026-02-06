@@ -53,7 +53,7 @@ async def start(message: types.Message):
     )
 
 # ===== CALLBACK HANDLER =====
-@dp@dp.callback_query()
+@dp.callback_query()
 async def handle_buttons(callback: types.CallbackQuery):
     data = callback.data
 
