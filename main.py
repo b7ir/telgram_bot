@@ -3,7 +3,10 @@ import asyncio
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+import time
 
+user_last_start = {}
+START_COOLDOWN = 5  # چرکە
 # ===== TOKEN =====
 TOKEN = os.getenv("BOT_TOKEN")
 if not TOKEN:
@@ -43,15 +46,23 @@ services_keyboard = InlineKeyboardMarkup(
     ]
 )
 # ===== /start =====
-@dp.message(Command("start"))
+@dp@dp.message(Command("start"))
 async def start(message: types.Message):
+    user_id = message.from_user.id
+    now = time.time()
+
+    if user_id in user_last_start:
+        if now - user_last_start[user_id] < START_COOLDOWN:
+            return  # هیچ وەڵامێک مەدە
+
+    user_last_start[user_id] = now
+
     await message.answer(
         "👋 بەخێربێیت!\n"
         "🤖 بۆت بە سەرکەوتوویی کار دەکات.\n"
         "👇 دووگمەی خوارەوە بەکاربهێنە:",
         reply_markup=menu_keyboard
     )
-
 # ===== CALLBACK HANDLER =====
 @dp.callback_query()
 async def handle_buttons(callback: types.CallbackQuery):
