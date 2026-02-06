@@ -46,7 +46,7 @@ services_keyboard = InlineKeyboardMarkup(
     ]
 )
 # ===== /start =====
-@dp@dp.message(Command("start"))
+@dp.message(Command("start"))
 async def start(message: types.Message):
     user_id = message.from_user.id
     now = time.time()
