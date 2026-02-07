@@ -48,15 +48,6 @@ services_keyboard = InlineKeyboardMarkup(
 # ===== /start =====
 @dp.message(Command("start"))
 async def start(message: types.Message):
-    user_id = message.from_user.id
-    now = time.time()
-
-    if user_id in user_last_start:
-        if now - user_last_start[user_id] < START_COOLDOWN:
-            return  # هیچ وەڵامێک مەدە
-
-    user_last_start[user_id] = now
-
     await message.answer(
         "👋 بەخێربێیت!\n"
         "🤖 بۆت بە سەرکەوتوویی کار دەکات.\n"
