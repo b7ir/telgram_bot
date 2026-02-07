@@ -18,6 +18,30 @@ if not TOKEN:
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
+# ===== POINTS SYSTEM =====
+DATA_FILE = Path("users.json")
+
+def load_users():
+    if not DATA_FILE.exists():
+        return {}
+    with open(DATA_FILE, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+def save_users(data):
+    with open(DATA_FILE, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+def get_user(user_id):
+    users = load_users()
+    uid = str(user_id)
+
+    if uid not in users:
+        users[uid] = {
+            "points": 0
+        }
+        save_users(users)
+
+    return users[uid]
 # ===== MENU KEYBOARD =====
 menu_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
@@ -50,17 +74,15 @@ services_keyboard = InlineKeyboardMarkup(
 # ===== /start =====
 @dp.message(Command("start"))
 async def start(message: types.Message):
+    # 👇 دڵنیابوون لە تۆمارکردنی بەکارهێنەر
+    get_user(message.from_user.id)
+
     await message.answer(
         "👋 بەخێربێیت!\n"
         "🤖 بۆت بە سەرکەوتوویی کار دەکات.\n"
         "👇 دووگمەی خوارەوە بەکاربهێنە:",
         reply_markup=menu_keyboard
     )
-# ===== CALLBACK HANDLER =====
-@dp.callback_query()
-async def handle_buttons(callback: types.CallbackQuery):
-    data = callback.data
-
     # ===== MAIN MENU =====
     if data == "services":
         await callback.message.edit_text(
