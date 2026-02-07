@@ -5,7 +5,10 @@ from pathlib import Path
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-
+# ===== نرخەکانی خاڵ =====
+LIKE_COST = 10
+FOLLOW_COST = 20
+VIEW_COST = 5
 # ===== TOKEN =====
 TOKEN = os.getenv("BOT_TOKEN")
 if not TOKEN:
@@ -31,7 +34,19 @@ def save_users(data):
 def get_user(user_id):
     users = load_users()
     uid = str(user_id)
+def change_points(user_id, amount):
+    users = load_users()
+    uid = str(user_id)
 
+    if uid not in users:
+        users[uid] = {"points": 0}
+
+    users[uid]["points"] += amount
+
+    if users[uid]["points"] < 0:
+        users[uid]["points"] = 0
+
+    save_users(users)
     if uid not in users:
         users[uid] = {
             "points": 0
@@ -83,7 +98,45 @@ async def start(message: types.Message):
 @dp.callback_query()
 async def handle_buttons(callback: types.CallbackQuery):
     data = callback.data
+elif data == "like_service":
+    user = callback.from_user
+    user_data = get_user(user.id)
 
+    if user_data["points"] < LIKE_COST:
+        await callback.message.answer("❌ خاڵت بەس نییە بۆ لایک")
+    else:
+        change_points(user.id, -LIKE_COST)
+        await callback.message.answer(
+            f"✅ لایک سەرکەوتوو بوو\n"
+            f"💎 {LIKE_COST} خاڵ کەم کرا\n"
+            f"💰 خاڵی ماوە: {get_user(user.id)['points']}"
+        )
+        elif data == "follow_service":
+    user = callback.from_user
+    user_data = get_user(user.id)
+
+    if user_data["points"] < FOLLOW_COST:
+        await callback.message.answer("❌ خاڵت بەس نییە بۆ فۆلۆو")
+    else:
+        change_points(user.id, -FOLLOW_COST)
+        await callback.message.answer(
+            f"✅ فۆلۆو سەرکەوتوو بوو\n"
+            f"💎 {FOLLOW_COST} خاڵ کەم کرا\n"
+            f"💰 خاڵی ماوە: {get_user(user.id)['points']}"
+        )
+        elif data == "view_service":
+    user = callback.from_user
+    user_data = get_user(user.id)
+
+    if user_data["points"] < VIEW_COST:
+        await callback.message.answer("❌ خاڵت بەس نییە بۆ بینین")
+    else:
+        change_points(user.id, -VIEW_COST)
+        await callback.message.answer(
+            f"✅ بینین سەرکەوتوو بوو\n"
+            f"💎 {VIEW_COST} خاڵ کەم کرا\n"
+            f"💰 خاڵی ماوە: {get_user(user.id)['points']}"
+        )
     # ===== MAIN MENU =====
     if data == "services":
         await callback.message.edit_text(
