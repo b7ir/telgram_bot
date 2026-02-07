@@ -74,7 +74,6 @@ services_keyboard = InlineKeyboardMarkup(
 # ===== /start =====
 @dp.message(Command("start"))
 async def start(message: types.Message):
-    # 👇 دڵنیابوون لە تۆمارکردنی بەکارهێنەر
     get_user(message.from_user.id)
 
     await message.answer(
@@ -83,6 +82,11 @@ async def start(message: types.Message):
         "👇 دووگمەی خوارەوە بەکاربهێنە:",
         reply_markup=menu_keyboard
     )
+# ===== CALLBACK HANDLER =====
+@dp.callback_query()
+async def handle_buttons(callback: types.CallbackQuery):
+    data = callback.data
+
     # ===== MAIN MENU =====
     if data == "services":
         await callback.message.edit_text(
@@ -104,32 +108,34 @@ async def start(message: types.Message):
 
     elif data == "profile":
         user = callback.from_user
+        user_data = get_user(user.id)
+
         await callback.message.answer(
-            f"👤 زانیاری هەژمار\n\n"
+            f"👤 هەژمار\n\n"
             f"🆔 ID: `{user.id}`\n"
-            f"👤 ناو: {user.full_name}\n"
-            f"🔗 یوزەرنەیم: @{user.username if user.username else 'نییە'}",
+            f"💎 خاڵ: {user_data['points']}\n"
+            f"👤 ناو: {user.full_name}",
             parse_mode="Markdown"
         )
 
     elif data == "support":
-        await callback.message.answer("📬 پشتیوانی\n\n📩 پەیوەندی بکە: @YourSupport")
+        await callback.message.answer("📬 پشتیوانی")
 
     elif data == "stats":
-        await callback.message.answer("📊 ئامارەکان\n\n🚧 لە داهاتوودا")
+        await callback.message.answer("📊 ئامارەکان")
 
     elif data == "help":
-        await callback.message.answer("❓ یارمەتیدان\n\nℹ️ دووگمەکان بەکاربهێنە")
+        await callback.message.answer("❓ یارمەتیدان")
 
     # ===== SERVICES =====
     elif data == "like_service":
-        await callback.message.answer("👍 خزمەتگوزاری لایک\n\n💰 نرخ: 1000 لایک = X$")
+        await callback.message.answer("👍 خزمەتگوزاری لایک")
 
     elif data == "follow_service":
-        await callback.message.answer("➕ خزمەتگوزاری فۆلۆو\n\n💰 نرخ: 1000 فۆلۆو = X$")
+        await callback.message.answer("➕ خزمەتگوزاری فۆلۆو")
 
     elif data == "view_service":
-        await callback.message.answer("👀 خزمەتگوزاری بینین\n\n💰 نرخ: 1000 بینین = X$")
+        await callback.message.answer("👀 خزمەتگوزاری بینین")
 
     elif data == "back_to_main":
         await callback.message.edit_text(
