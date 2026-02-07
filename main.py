@@ -7,7 +7,6 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-
 # ===== TOKEN =====
 TOKEN = os.getenv("BOT_TOKEN")
 if not TOKEN:
