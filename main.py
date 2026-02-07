@@ -123,3 +123,9 @@ async def handle_buttons(callback: types.CallbackQuery):
         )
 
     await callback.answer()
+    # ===== MAIN =====
+async def main():
+    await dp.start_polling(bot)
+
+if __name__ == "__main__":
+    asyncio.run(main())
