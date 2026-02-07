@@ -1,9 +1,11 @@
 import os
 import asyncio
+import time
+import json
+from pathlib import Path
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-import time
 
 user_last_start = {}
 START_COOLDOWN = 5  # چرکە
