@@ -1,6 +1,5 @@
 import os
 import asyncio
-import time
 import json
 from pathlib import Path
 from aiogram import Bot, Dispatcher, types
