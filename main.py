@@ -7,8 +7,7 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-user_last_start = {}
-START_COOLDOWN = 5  # چرکە
+
 # ===== TOKEN =====
 TOKEN = os.getenv("BOT_TOKEN")
 if not TOKEN:
