@@ -80,7 +80,7 @@ async def start(message: types.Message):
     get_user(message.from_user.id)
     await message.answer("👋 بەخێربێیت", reply_markup=menu_keyboard)
 
-‏# ===== ADMIN ADD POINTS =====
+# ADMIN ADD POINTS
 @dp.message(Command("addpoints"))
 async def add_points(message: types.Message):
     if message.from_user.id != ADMIN_ID:
