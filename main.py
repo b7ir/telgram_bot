@@ -82,33 +82,50 @@ async def start(message: types.Message):
     await message.answer("👋 بەخێربێیت", reply_markup=menu_keyboard)
 
 # ADMIN ADD POINTS
-@dp.message(Command("addpoints"))
-async def add_points(message: types.Message):
-    if message.from_user.id != ADMIN_ID:
-        await message.answer("❌ تۆ ئەدمین نیت")
+@dp.message()
+async def handle_quantity(message: types.Message):
+    user_id = message.from_user.id
+
+    if user_id not in pending_orders:
         return
 
-    args = message.text.split()
-
-    if len(args) != 3:
-        await message.answer("❌ شێواز: /addpoints USER_ID AMOUNT")
+    if not message.text.isdigit():
+        await message.answer("تکایە تەنیا ژمارە بنووسە")
         return
 
-    try:
-        user_id = int(args[1])
-        amount = int(args[2])
-    except ValueError:
-        await message.answer("❌ ژمارە دروست نییە")
+    amount_100 = int(message.text)
+    service = pending_orders[user_id]
+    user_data = get_user(user_id)
+
+    if service == "like":
+        price = LIKE_PRICE_PER_100
+        service_name = "لایک"
+    elif service == "follow":
+        price = FOLLOW_PRICE_PER_100
+        service_name = "فۆلۆو"
+    elif service == "view":
+        price = VIEW_PRICE_PER_100
+        service_name = "بینین"
+    else:
         return
 
-    change_points(user_id, amount)
+    total_cost = amount_100 * price
+
+    if user_data["points"] < total_cost:
+        await message.answer("❌ خاڵت بەس نییە")
+        pending_orders.pop(user_id)
+        return
+
+    change_points(user_id, -total_cost)
 
     await message.answer(
-        f"✅ {amount} خاڵ زیاد کرا بۆ\n"
-        f"🆔 {user_id}\n"
-        f"💎 خاڵی نوێ: {get_user(user_id)['points']}"
+        f"✅ داواکاری سەرکەوتوو بوو\n"
+        f"📦 {amount_100 * 100} {service_name}\n"
+        f"💎 {total_cost} خاڵ کەم کرا\n"
+        f"💰 خاڵی ماوە: {get_user(user_id)['points']}"
     )
-    
+
+    pending_orders.pop(user_id)
 # ===== CALLBACKS =====
 @dp.callback_query()
 async def handle_buttons(callback: types.CallbackQuery):
