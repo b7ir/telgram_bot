@@ -5,6 +5,7 @@ from pathlib import Path
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+ADMIN_ID = 1621554170
 
 # ===== نرخەکانی خاڵ =====
 LIKE_COST = 10
@@ -79,6 +80,34 @@ async def start(message: types.Message):
     get_user(message.from_user.id)
     await message.answer("👋 بەخێربێیت", reply_markup=menu_keyboard)
 
+‏# ===== ADMIN ADD POINTS =====
+@dp.message(Command("addpoints"))
+async def add_points(message: types.Message):
+    if message.from_user.id != ADMIN_ID:
+        await message.answer("❌ تۆ ئەدمین نیت")
+        return
+
+    args = message.text.split()
+
+    if len(args) != 3:
+        await message.answer("❌ شێواز: /addpoints USER_ID AMOUNT")
+        return
+
+    try:
+        user_id = int(args[1])
+        amount = int(args[2])
+    except ValueError:
+        await message.answer("❌ ژمارە دروست نییە")
+        return
+
+    change_points(user_id, amount)
+
+    await message.answer(
+        f"✅ {amount} خاڵ زیاد کرا بۆ\n"
+        f"🆔 {user_id}\n"
+        f"💎 خاڵی نوێ: {get_user(user_id)['points']}"
+    )
+    
 # ===== CALLBACKS =====
 @dp.callback_query()
 async def handle_buttons(callback: types.CallbackQuery):
