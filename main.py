@@ -5,12 +5,15 @@ from pathlib import Path
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+
+# ===== ADMIN =====
 ADMIN_ID = 1621554170
 
 # ===== نرخەکانی خاڵ =====
 LIKE_PRICE_PER_100 = 10
 FOLLOW_PRICE_PER_100 = 20
 VIEW_PRICE_PER_100 = 5
+
 pending_orders = {}
 
 # ===== TOKEN =====
@@ -75,22 +78,11 @@ services_keyboard = InlineKeyboardMarkup(
     ]
 )
 
-# ===== /start =====
+# ===== START =====
 @dp.message(Command("start"))
 async def start(message: types.Message):
     get_user(message.from_user.id)
     await message.answer("👋 بەخێربێیت", reply_markup=menu_keyboard)
-
-# ADMIN ADD POINTS
-# ===== /start =====
-@dp.message(Command("start"))
-async def start(message: types.Message):
-    get_user(message.from_user.id)
-    await message.answer(
-        "👋 بەخێربێیت",
-        reply_markup=menu_keyboard
-    )
-
 
 # ===== ADMIN ADD POINTS =====
 @dp.message(Command("addpoints"))
@@ -99,122 +91,4 @@ async def add_points(message: types.Message):
         await message.answer("❌ تۆ ئەدمین نیت")
         return
 
-    args = message.text.split()
-
-    if len(args) != 3:
-        await message.answer("❌ شێواز: /addpoints USER_ID AMOUNT")
-        return
-
-    try:
-        user_id = int(args[1])
-        amount = int(args[2])
-    except ValueError:
-        await message.answer("❌ ژمارە دروست نییە")
-        return
-
-    change_points(user_id, amount)
-
-    await message.answer(
-        f"✅ {amount} خاڵ زیاد کرا بۆ\n"
-        f"🆔 {user_id}\n"
-        f"💎 خاڵی نوێ: {get_user(user_id)['points']}"
-    )
-@dp.message()
-async def handle_quantity(message: types.Message):
-    user_id = message.from_user.id
-
-    if user_id not in pending_orders:
-        return
-
-    if not message.text.isdigit():
-        await message.answer("تکایە تەنیا ژمارە بنووسە")
-        return
-
-    amount_100 = int(message.text)
-    service = pending_orders[user_id]
-    user_data = get_user(user_id)
-
-    if service == "like":
-        price = LIKE_PRICE_PER_100
-        service_name = "لایک"
-    elif service == "follow":
-        price = FOLLOW_PRICE_PER_100
-        service_name = "فۆلۆو"
-    elif service == "view":
-        price = VIEW_PRICE_PER_100
-        service_name = "بینین"
-    else:
-        return
-
-    total_cost = amount_100 * price
-
-    if user_data["points"] < total_cost:
-        await message.answer("❌ خاڵت بەس نییە")
-        pending_orders.pop(user_id)
-        return
-
-    change_points(user_id, -total_cost)
-
-    await message.answer(
-        f"✅ داواکاری سەرکەوتوو بوو\n"
-        f"📦 {amount_100 * 100} {service_name}\n"
-        f"💎 {total_cost} خاڵ کەم کرا\n"
-        f"💰 خاڵی ماوە: {get_user(user_id)['points']}"
-    )
-
-    pending_orders.pop(user_id)
-# ===== CALLBACKS =====
-@dp.callback_query()
-async def handle_buttons(callback: types.CallbackQuery):
-    data = callback.data
-    user = callback.from_user
-    user_data = get_user(user.id)
-
-    if data == "services":
-        await callback.message.edit_text(
-            "🛒 خزمەتگوزاریەکان",
-            reply_markup=services_keyboard
-        )
-
-    elif data == "profile":
-        await callback.message.answer(
-            f"👤 هەژمار\n💎 خاڵ: {user_data['points']}"
-        )
-
-    # ===== LIKE =====
-    elif data == "like_service":
-        pending_orders[user.id] = "like"
-        await callback.message.answer(
-            "چەند 100 لایک دەتەوێت؟\n"
-            "نموونە: 3 (واتە 300 لایک)"
-        )
-
-    # ===== FOLLOW =====
-    elif data == "follow_service":
-        pending_orders[user.id] = "follow"
-        await callback.message.answer(
-            "چەند 100 فۆلۆو دەتەوێت؟\n"
-            "نموونە: 2 (واتە 200 فۆلۆو)"
-        )
-
-    # ===== VIEW =====
-    elif data == "view_service":
-        pending_orders[user.id] = "view"
-        await callback.message.answer(
-            "چەند 100 بینین دەتەوێت؟\n"
-            "نموونە: 5 (واتە 500 بینین)"
-        )
-
-    elif data == "back":
-        await callback.message.edit_text(
-            "👇 سەرەتا",
-            reply_markup=menu_keyboard
-        )
-
-    await callback.answer()
-# ===== MAIN =====
-async def main():
-    await dp.start_polling(bot)
-
-if __name__ == "__main__":
-    asyncio.run(main())
+    args = message.text
