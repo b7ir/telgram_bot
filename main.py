@@ -8,9 +8,10 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 ADMIN_ID = 1621554170
 
 # ===== نرخەکانی خاڵ =====
-LIKE_COST = 10
-FOLLOW_COST = 20
-VIEW_COST = 5
+LIKE_PRICE_PER_100 = 10
+FOLLOW_PRICE_PER_100 = 20
+VIEW_PRICE_PER_100 = 5
+pending_orders = {}
 
 # ===== TOKEN =====
 TOKEN = os.getenv("BOT_TOKEN")
@@ -116,39 +117,47 @@ async def handle_buttons(callback: types.CallbackQuery):
     user_data = get_user(user.id)
 
     if data == "services":
-        await callback.message.edit_text("🛒 خزمەتگوزاریەکان", reply_markup=services_keyboard)
+        await callback.message.edit_text(
+            "🛒 خزمەتگوزاریەکان",
+            reply_markup=services_keyboard
+        )
 
     elif data == "profile":
         await callback.message.answer(
             f"👤 هەژمار\n💎 خاڵ: {user_data['points']}"
         )
 
+    # ===== LIKE =====
     elif data == "like_service":
-        if user_data["points"] < LIKE_COST:
-            await callback.message.answer("❌ خاڵت بەس نییە")
-        else:
-            change_points(user.id, -LIKE_COST)
-            await callback.message.answer(f"✅ لایک ✔️\n💎 خاڵی ماوە: {get_user(user.id)['points']}")
+        pending_orders[user.id] = "like"
+        await callback.message.answer(
+            "چەند 100 لایک دەتەوێت؟\n"
+            "نموونە: 3 (واتە 300 لایک)"
+        )
 
+    # ===== FOLLOW =====
     elif data == "follow_service":
-        if user_data["points"] < FOLLOW_COST:
-            await callback.message.answer("❌ خاڵت بەس نییە")
-        else:
-            change_points(user.id, -FOLLOW_COST)
-            await callback.message.answer(f"✅ فۆلۆو ✔️\n💎 خاڵی ماوە: {get_user(user.id)['points']}")
+        pending_orders[user.id] = "follow"
+        await callback.message.answer(
+            "چەند 100 فۆلۆو دەتەوێت؟\n"
+            "نموونە: 2 (واتە 200 فۆلۆو)"
+        )
 
+    # ===== VIEW =====
     elif data == "view_service":
-        if user_data["points"] < VIEW_COST:
-            await callback.message.answer("❌ خاڵت بەس نییە")
-        else:
-            change_points(user.id, -VIEW_COST)
-            await callback.message.answer(f"✅ بینین ✔️\n💎 خاڵی ماوە: {get_user(user.id)['points']}")
+        pending_orders[user.id] = "view"
+        await callback.message.answer(
+            "چەند 100 بینین دەتەوێت؟\n"
+            "نموونە: 5 (واتە 500 بینین)"
+        )
 
     elif data == "back":
-        await callback.message.edit_text("👇 سەرەتا", reply_markup=menu_keyboard)
+        await callback.message.edit_text(
+            "👇 سەرەتا",
+            reply_markup=menu_keyboard
+        )
 
     await callback.answer()
-
 # ===== MAIN =====
 async def main():
     await dp.start_polling(bot)
